@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class UserServices {
 
+    //    REDIS CRUD
+
     @Autowired
     private UserRepository userRepository;
 

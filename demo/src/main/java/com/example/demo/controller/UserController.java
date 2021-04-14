@@ -18,10 +18,11 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value = "/api/vi/user")
+@RequestMapping(value = "/api/v1/user")
 @Slf4j
 public class UserController {
 
+//    REDIS CACHE
 
     @Autowired
     private UserServices userServices;
