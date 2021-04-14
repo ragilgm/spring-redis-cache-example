@@ -2,8 +2,10 @@ package com.example.demo.services;
 
 
 import com.example.demo.dto.request.UserRequest;
+import com.example.demo.dto.response.MessageResponse;
 import com.example.demo.dto.response.UserResponse;
 import com.example.demo.entity.User;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
@@ -32,7 +34,7 @@ public class UserServices {
     @SneakyThrows
     public UserResponse findUserById(long id){
         return userRepository.findById(id).map(this::convertModeToResponse)
-                .orElseThrow(()-> new Exception("user not found"));
+                .orElseThrow(()-> new ResourceNotFoundException("user not found"));
     }
 
     public UserResponse saveUser(UserRequest request){
@@ -46,12 +48,12 @@ public class UserServices {
     }
 
     @SneakyThrows
-    public Boolean deleteUser(long id){
+    public MessageResponse deleteUser(long id){
         return userRepository.findById(id)
                 .map(u-> {
                     userRepository.delete(u);
-                    return Boolean.TRUE;
-                }).orElseThrow(()-> new Exception("user not found"));
+                    return MessageResponse.builder().message("user dengan id "+id+" berhasil di hapus").build();
+                }).orElseThrow(()-> new ResourceNotFoundException("user not found"));
     }
 
     @SneakyThrows
@@ -60,10 +62,9 @@ public class UserServices {
             updateUser.setFirstName(request.getFirstName());
             updateUser.setLastName(request.getLastName());
             return userRepository.save(updateUser);
-        }).orElseThrow(()-> new Exception("user not found"));
+        }).orElseThrow(()-> new ResourceNotFoundException("user not found"));
         return convertModeToResponse(user);
     }
-
 
     public UserResponse convertModeToResponse(User user){
         return UserResponse.builder()

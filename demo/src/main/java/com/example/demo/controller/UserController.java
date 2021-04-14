@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -40,14 +41,14 @@ public class UserController {
 
     @PostMapping
     @CachePut(value="user" ,key = "#result.id")
-    public UserResponse saveUser(@RequestBody UserRequest request){
+    public UserResponse saveUser(@Valid @RequestBody UserRequest request){
         log.info("saving user to database");
         return userServices.saveUser(request);
     }
 
     @PutMapping("/{id}")
-    @CachePut (value = "user", key = "#id")
-    public UserResponse updateUser(@PathVariable("id") long id, @RequestBody UserRequest request){
+    @CachePut (value = "user", key = "#result.id")
+    public UserResponse updateUser(@PathVariable("id") long id,@Valid @RequestBody UserRequest request){
         log.info("updating user to database");
         return userServices.updateUser(id, request);
     }
@@ -55,12 +56,8 @@ public class UserController {
     @DeleteMapping("/{id}")
     @CacheEvict(value="user",key = "#id")
     public MessageResponse deleteUser(@PathVariable("id") long id){
-        log.info("getting user in database");
-        return userServices.deleteUser(id)?
-                MessageResponse.builder().message("user dengan id "+id+" berhasil di hapus").build()
-                :
-                MessageResponse.builder().message("user dengan id "+id+" gagal di hapus").build();
-
+        log.info("deleting user in database");
+        return userServices.deleteUser(id);
     }
 
 
