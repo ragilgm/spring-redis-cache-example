@@ -1,0 +1,68 @@
+package com.example.demo.controller;
+
+
+import com.example.demo.dto.request.UserRequest;
+import com.example.demo.dto.response.MessageResponse;
+import com.example.demo.dto.response.UserResponse;
+import com.example.demo.services.UserServices;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@AllArgsConstructor
+@RequestMapping(value = "/api/vi/user")
+@Slf4j
+public class UserController {
+
+
+    @Autowired
+    private UserServices userServices;
+
+
+    @GetMapping
+    public List<UserResponse> findAllUser(){
+        return userServices.listUser();
+    }
+
+    @GetMapping("/{id}")
+    @Cacheable(value = "user_id", key = "#id")
+    public UserResponse findById(@PathVariable("id") long id){
+        log.info("getting user in database");
+        return userServices.findUserById(id);
+    }
+
+    @PostMapping
+    @CachePut(value="user_add" ,key = "#result")
+    public UserResponse saveUser(@RequestBody UserRequest request){
+        log.info("getting user in database");
+        return userServices.saveUser(request);
+    }
+
+    @PutMapping("/{id}")
+    @CachePut (value = "user_edit", key = "#id")
+    public UserResponse updateUser(@PathVariable("id") long id, @RequestBody UserRequest request){
+        log.info("getting user in database");
+        return userServices.updateUser(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @CacheEvict(value="delete_user",key = "#id")
+    public MessageResponse deleteUser(@PathVariable("id") long id){
+        log.info("getting user in database");
+        return userServices.deleteUser(id)?
+                MessageResponse.builder().message("user dengan id "+id+" berhasil di hapus").build()
+                :
+                MessageResponse.builder().message("user dengan id "+id+" gagal di hapus").build();
+
+    }
+
+
+
+}

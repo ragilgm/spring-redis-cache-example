@@ -1,0 +1,21 @@
+spring:
+  cache:
+    type: redis
+    cache-names: user
+    redis:
+      key-prefix: user-test
+      cache-null-values: false
+      time-to-live: 10000
+
+  profiles:
+    active: dev
+
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    timeout: 60000
+
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
