@@ -32,28 +32,28 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    @Cacheable(value = "user_id", key = "#id")
+    @Cacheable(value = "user", key = "#id")
     public UserResponse findById(@PathVariable("id") long id){
-        log.info("getting user in database");
+        log.info("getting user id "+id+" in database");
         return userServices.findUserById(id);
     }
 
     @PostMapping
-    @CachePut(value="user_add" ,key = "#result")
+    @CachePut(value="user" ,key = "#result.id")
     public UserResponse saveUser(@RequestBody UserRequest request){
-        log.info("getting user in database");
+        log.info("saving user to database");
         return userServices.saveUser(request);
     }
 
     @PutMapping("/{id}")
-    @CachePut (value = "user_edit", key = "#id")
+    @CachePut (value = "user", key = "#id")
     public UserResponse updateUser(@PathVariable("id") long id, @RequestBody UserRequest request){
-        log.info("getting user in database");
+        log.info("updating user to database");
         return userServices.updateUser(id, request);
     }
 
     @DeleteMapping("/{id}")
-    @CacheEvict(value="delete_user",key = "#id")
+    @CacheEvict(value="user",key = "#id")
     public MessageResponse deleteUser(@PathVariable("id") long id){
         log.info("getting user in database");
         return userServices.deleteUser(id)?

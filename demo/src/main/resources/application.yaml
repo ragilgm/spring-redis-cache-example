@@ -3,9 +3,9 @@ spring:
     type: redis
     cache-names: user
     redis:
-      key-prefix: user-test
+      key-prefix: user-
       cache-null-values: false
-      time-to-live: 10000
+      time-to-live: 1000000
 
   profiles:
     active: dev
